@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Pustok.Business.Abstractions;
 
-namespace Pustok.Business.Exceptions
+namespace Pustok.Business.Exceptions;
+
+public class NotFoundException(string message = "Object is not found") : Exception(message), IBaseException
 {
-    public class NotFoundException(string message="Object is not found") :Exception
-    {
-
-
-    }
+    public int StatusCode { get; } = 404;
 }

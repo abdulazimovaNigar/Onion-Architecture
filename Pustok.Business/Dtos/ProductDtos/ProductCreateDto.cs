@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace Pustok.Business.Dtos.ProductDtos
+namespace Pustok.Business.Dtos;
+
+public class ProductCreateDto
 {
-    public class ProductCreateDto
-    {
-        public string Name { get; set; }
-
-        public string ImageUrl { get; set; }
-        public decimal Price { get; set; }
-        public string Description { get; set; }
-
-        public Guid CategoryId { get; set; }
-    }
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public IFormFile Image { get; set; } = null!;
+    public decimal Price { get; set; }
+    public Guid CategoryId { get; set; }
 }

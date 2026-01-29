@@ -1,26 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pustok.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Pustok.Core.Entites;
+using Pustok.Core.Entites.Common;
+using Pustok.DataAccess.Interceptors;
+using System.Reflection;
 
-namespace Pustok.DataAccess.Contexts
+namespace Pustok.DataAccess.Contexts;
+
+internal class AppDbContext(BaseAuditableInterceptor _interceptor, DbContextOptions options) : DbContext(options)
 {
-    internal class AppDbContext : DbContext
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public AppDbContext(DbContextOptions options) : base(options)
-        {
-        }
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-            base.OnModelCreating(modelBuilder);
-        }
+        modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
 
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        base.OnModelCreating(modelBuilder);
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_interceptor);
+        base.OnConfiguring(optionsBuilder);
+    }
+
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Category> Categories { get; set; }
 }
